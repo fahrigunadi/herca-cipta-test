@@ -19,6 +19,10 @@ export default function MainLayout({ children }) {
                             </div>
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink href={route('komisi-penjualan.index')} active={route().current('komisi-penjualan.index')}>
+                                    Komisi Penjualan
+                                </NavLink>
+
                                 <NavLink href={route('marketing.index')} active={route().current('marketing.index')}>
                                     Marketing
                                 </NavLink>
@@ -57,6 +61,10 @@ export default function MainLayout({ children }) {
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink href={route('komisi-penjualan.index')} active={route().current('komisi-penjualan.index')}>
+                            Komisi Penjualan
+                        </ResponsiveNavLink>
+
                         <ResponsiveNavLink href={route('marketing.index')} active={route().current('marketing.index')}>
                             Marketing
                         </ResponsiveNavLink>

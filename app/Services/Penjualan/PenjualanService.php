@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Services\Penjualan;
+
+use Carbon\Carbon;
 use App\Models\Penjualan;
+use Illuminate\Support\Facades\DB;
 
 class PenjualanService
 {
@@ -30,5 +33,56 @@ class PenjualanService
         return [
             'penjualan' => $penjualan,
         ];
+    }
+
+    public function dataKomisiPenjualan()
+    {
+        $komisi = Penjualan::query()
+            ->select(
+                DB::raw('marketing_id'),
+                DB::raw('DATE_FORMAT(date, "%Y-%m") as month'),
+                DB::raw('SUM(grand_total) as omzet'),
+            )
+            ->with('marketing')
+            ->groupBy('marketing_id', 'month')
+            ->orderBy('month')
+            ->orderBy('marketing_id')
+            ->get();
+
+        $result = $komisi->map(function ($item) {
+            $pecentage = $this->getCommissionPersentage($item->omzet);
+            $commission = $this->getCommission($item->omzet, $pecentage);
+
+            return [
+                'marketing' => $item->marketing->name,
+                'month' => Carbon::parse($item->month)->format('F Y'),
+                'omzet' => number_format($item->omzet, 0, ',', '.'),
+                'commission_percentage' => $pecentage,
+                'commission' => number_format($commission, 0, ',', '.'),
+            ];
+        });
+
+        return [
+            'komisi' => $result,
+        ];
+    }
+
+    private function getCommissionPersentage(int $omzet): float
+    {
+        return match (true) {
+            $omzet <= 100_000_000 => 0,
+            $omzet <= 200_000_000 => 2.5,
+            $omzet <= 500_000_000 => 5,
+            default => 10,
+        };
+    }
+
+    private function getCommission($omzet, $persentage): int
+    {
+        if ($persentage === 0) {
+            return 0;
+        }
+
+        return ($persentage / 100) * $omzet;
     }
 }
