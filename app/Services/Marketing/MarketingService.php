@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Marketing;
+
 use App\Models\Marketing;
 
 class MarketingService
@@ -21,5 +22,15 @@ class MarketingService
     public function store(array $data): Marketing
     {
         return Marketing::create($data);
+    }
+
+    public function update(Marketing $marketing, array $data): bool
+    {
+        return $marketing->update($data);
+    }
+
+    public function destroy(Marketing $marketing): ?bool
+    {
+        return $marketing->delete();
     }
 }

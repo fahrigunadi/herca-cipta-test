@@ -9,8 +9,12 @@ Route::redirect('/', '/komisi-penjualan');
 
 Route::get('komisi-penjualan', KomisiPenjualanController::class)->name('komisi-penjualan.index');
 
-Route::get('marketing', [MarketingController::class, 'index'])->name('marketing.index');
-Route::post('marketing', [MarketingController::class, 'store'])->name('marketing.store');
+Route::controller(MarketingController::class)->prefix('marketing')->as('marketing.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::put('/{marketing}', 'update')->name('update');
+    Route::delete('/{marketing}', 'destroy')->name('destroy');
+});
 
 Route::get('penjualan', PenjualanController::class)->name('penjualan.index');
 

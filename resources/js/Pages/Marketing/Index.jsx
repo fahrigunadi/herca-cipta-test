@@ -3,8 +3,14 @@ import Searchinput from '@/Components/Searchinput';
 import Pagination from '@/Components/Pagination';
 import MainLayout from '@/Layouts/MainLayout';
 import { Head } from '@inertiajs/react';
+import PrimaryButton from '@/Components/PrimaryButton';
+import { useState } from 'react';
+import EditModalMarketing from './Partials/EditModal';
+import DeleteModalMarketing from './Partials/DeleteModal';
 
 export default function IndexMarketing({ marketing }) {
+    const [dataEdit, setDataEdit] = useState(null)
+
     return (
         <MainLayout>
             <Head title="Semua Marketing" />
@@ -44,7 +50,10 @@ export default function IndexMarketing({ marketing }) {
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                                 {item.name}
                                             </th>
-                                            <td className="px-6 py-4"></td>
+                                            <td className="px-6 py-4 space-x-2">
+                                                <EditModalMarketing item={item} />
+                                                <DeleteModalMarketing item={item} />
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
