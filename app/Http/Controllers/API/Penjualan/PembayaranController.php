@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API\Penjualan;
 
-use App\Http\Requests\Penjualan\StorePembayaranPenjualanRequest;
-use App\Models\Marketing;
 use App\Models\Penjualan;
-use App\Services\Penjualan\PenjualanService;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Services\Penjualan\PenjualanService;
+use App\Http\Requests\Penjualan\StorePembayaranPenjualanRequest;
 
 class PembayaranController extends Controller
 {
@@ -18,7 +18,7 @@ class PembayaranController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function index(Request $request, Penjualan $penjualan)
+    public function index(Request $request, Penjualan $penjualan): JsonResponse
     {
         return response()->json([
             'message' => 'success',
@@ -29,10 +29,8 @@ class PembayaranController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function store(StorePembayaranPenjualanRequest $request, Penjualan $penjualan)
+    public function store(StorePembayaranPenjualanRequest $request, Penjualan $penjualan): JsonResponse
     {
-        \DB::enableQueryLog();
-
         $remainingBalance = is_null($penjualan->pembayaran->last()?->remaining_balance) ? $penjualan->grand_total : $penjualan->pembayaran->last()?->remaining_balance;
 
         if ($remainingBalance <= 0) {
@@ -43,7 +41,6 @@ class PembayaranController extends Controller
 
         $pembayaran = $this->service->storePembayaran($penjualan, (int) $request->amount_paid);
 
-        logger(\DB::getQueryLog());
         return response()->json([
             'message' => 'success',
             'data' => [
