@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API\KomisiPenjualan;
+namespace App\Http\Controllers\API\Penjualan;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Services\Penjualan\PenjualanService;
 
-class KomisiPenjualanController extends Controller
+class PenjualanController extends Controller
 {
     public function __construct(
         protected PenjualanService $service,
@@ -20,7 +20,7 @@ class KomisiPenjualanController extends Controller
     {
         return response()->json([
             'message' => 'success',
-            'data' => $this->service->dataKomisiPenjualan(),
+            'data' => $this->service->dataIndex($request->search),
         ]);
     }
 }
