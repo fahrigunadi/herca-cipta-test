@@ -58,6 +58,6 @@ php artisan serve
 
 ## Usage
 - path: /komisi-penjualan merupakan halaman list komisi penjualan
-- path: /marketing halaman crud marekting
+- path: /marketing halaman crud marketing
 - path: /penjualan merupakan halaman penjualan dan pembayaran
 
