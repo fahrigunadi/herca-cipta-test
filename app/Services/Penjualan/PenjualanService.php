@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Penjualan;
 use App\Models\Pembayaran;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PenjualanService
 {
@@ -94,6 +95,7 @@ class PenjualanService
         $remainingBalance = $pembayaran->last()->remaining_balance ?? $penjualan->grand_total;
 
         return [
+            'marketing' => $penjualan->marketing?->name,
             'total_paid' => $totalPaid,
             'remaining_balance' => $remainingBalance,
             'penjualan' => $penjualan->withoutRelations(),
@@ -109,6 +111,12 @@ class PenjualanService
 
             $remainingBalance = $penjualan->grand_total - ($amountPaid + $penjualan->pembayaran()->sum('amount_paid'));
 
+            if ($remainingBalance < 0 && $remainingBalance + $amountPaid < 0) {
+                throw ValidationException::withMessages([
+                    'amount_paid' => 'Jumlah pembayaran melebihi total penjualan',
+                ]);
+            }
+
             $pembayaran = $penjualan->pembayaran()->create([
                 'payment_date' => now()->toDateTimeString(),
                 'amount_paid' => $amountPaid,
@@ -117,6 +125,8 @@ class PenjualanService
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
+
+            throw_if($th instanceof ValidationException, $th);
 
             abort(500);
         }

@@ -1,7 +1,8 @@
 import Searchinput from '@/Components/Searchinput';
 import Pagination from '@/Components/Pagination';
 import MainLayout from '@/Layouts/MainLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import PrimaryButton from '@/Components/PrimaryButton';
 
 export default function IndexPenjualan({ penjualan }) {
     return (
@@ -42,6 +43,9 @@ export default function IndexPenjualan({ penjualan }) {
                                         <th scope="col" className="px-6 py-3">
                                             Grand Total
                                         </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Aksi
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,6 +71,11 @@ export default function IndexPenjualan({ penjualan }) {
                                             </td>
                                             <td className="px-6 py-4">
                                                 {item.grand_total}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <Link href={route('penjualan.pembayaran.index', item.id)}>
+                                                    <PrimaryButton>Pembayaran</PrimaryButton>
+                                                </Link>
                                             </td>
                                         </tr>
                                     ))}

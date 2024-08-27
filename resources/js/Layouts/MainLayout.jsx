@@ -27,7 +27,7 @@ export default function MainLayout({ children }) {
                                     Marketing
                                 </NavLink>
 
-                                <NavLink href={route('penjualan.index')} active={route().current('penjualan.index')}>
+                                <NavLink href={route('penjualan.index')} active={route().current('penjualan.*')}>
                                     Penjualan
                                 </NavLink>
                             </div>
@@ -69,7 +69,7 @@ export default function MainLayout({ children }) {
                             Marketing
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink href={route('penjualan.index')} active={route().current('penjualan.index')}>
+                        <ResponsiveNavLink href={route('penjualan.index')} active={route().current('penjualan.*')}>
                             Penjualan
                         </ResponsiveNavLink>
                     </div>
