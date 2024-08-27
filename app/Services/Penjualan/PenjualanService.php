@@ -4,6 +4,7 @@ namespace App\Services\Penjualan;
 
 use Carbon\Carbon;
 use App\Models\Penjualan;
+use App\Models\Pembayaran;
 use Illuminate\Support\Facades\DB;
 
 class PenjualanService
@@ -84,5 +85,42 @@ class PenjualanService
         }
 
         return ($persentage / 100) * $omzet;
+    }
+
+    public function dataIndexPembayaran(Penjualan $penjualan): array
+    {
+        $pembayaran = $penjualan->pembayaran;
+        $totalPaid = $pembayaran->sum('amount_paid');
+        $remainingBalance = $pembayaran->last()->remaining_balance ?? $penjualan->grand_total;
+
+        return [
+            'total_paid' => $totalPaid,
+            'remaining_balance' => $remainingBalance,
+            'penjualan' => $penjualan->withoutRelations(),
+            'details' => $penjualan->pembayaran()->get(),
+        ];
+    }
+
+    public function storePembayaran(Penjualan $penjualan, int $amountPaid): Pembayaran
+    {
+        DB::beginTransaction();
+        try {
+            Penjualan::where('id', $penjualan->id)->lockForUpdate()->first();
+
+            $remainingBalance = $penjualan->grand_total - ($amountPaid + $penjualan->pembayaran()->sum('amount_paid'));
+
+            $pembayaran = $penjualan->pembayaran()->create([
+                'payment_date' => now()->toDateTimeString(),
+                'amount_paid' => $amountPaid,
+                'remaining_balance' => $remainingBalance,
+            ]);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            abort(500);
+        }
+
+        return $pembayaran;
     }
 }
