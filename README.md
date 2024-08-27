@@ -1,7 +1,7 @@
 # HERCA TEST
 
 ## Tech Stack
-- Laravel
+- Laravel 11
 - Inertia.js
 - React.js
 - TailwindCSS
